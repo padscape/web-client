@@ -1,11 +1,22 @@
-const mongoose = require('mongoose');
-const express = require('express');
+let mongoose = require('mongoose');
 
-const port = 8080;
-let app = express();
+const server = '192.168.1.12';
+const database = 'padscape';
 
-mongoose.connect('mongodb://localhost:8081/padscape', {useNewUrlParser: true});
-let db = mongoose.connection;
+class Database {
+  constructor() {
+    this._connect();
+  }
 
-db.on('error', console.error.bind(console, 'Database (MongoDB) connection error: '));
-app.listen(port, () => console.log(`App opened on 'http://localhost:${port}/'`));
+  _connect() {
+    mongoose.connect(`mongodb://${server}/${database}`, {useNewUrlParser: true})
+      .then(() => {
+        console.log('Database connection successful');
+      })
+      .catch(err => {
+        console.error(`Database connection error: ${err}`);
+      })
+  }
+}
+
+var db = new Database();
