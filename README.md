@@ -11,12 +11,12 @@ I have just setted up a new Raspberry Pi 3B+ running Raspbian, and having MariaD
 > sudo mysql -u root -p
 use padscape;
 ```
-## To see all ids
+## To see all IDs
 
 ```
 select * from code_ids;
 ```
-## To insert to ids table
+## To insert to IDs table
 
 ```
 insert into code_ids
