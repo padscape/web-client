@@ -30,11 +30,11 @@ values (1, '<html>test</html>');
 #### To insert into IDs table
 
 ```php
-add_new_code(array(1, '<html>test</html>'));
+add_new_code(array(id, code));
 ```
 
 #### To get the code of a certain ID
 
 ```php
-print_r( get_code_by_id(2));
+print_r(get_code_by_id(id));
 ```
