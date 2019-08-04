@@ -1,13 +1,16 @@
 <?php
-$conn = OpenCon();
+$conn = open_con();
+close_con($conn);
 
-$query = "insert into `code_ids` (`CodeID`, `Code`) values (2, '<html>phptest</html>')";
+function add_new_code($values) {
+    $result = execute("insert into `code_ids` (`CodeID`, `Code`) values (" . $values[0] . ", '" . $values[1] ."')");
+}
 
-$result = Execute($query);
+function get_code_by_id($id) {
+    return mysqli_fetch_array(execute("select * from `code_ids` where CodeID=" . $id));
+}
 
-CloseCon($conn);
-
-function OpenCon() {
+function open_con() {
     $dbhost = "localhost";
     $dbuser = "pij";
     $dbpass = "pij";
@@ -17,11 +20,11 @@ function OpenCon() {
     return $conn;
 }
 
-function CloseCon($conn) {
+function close_con($conn) {
     $conn -> close();
 }
 
-function Execute($code) {
+function execute($code) {
     global $conn;
     $result = mysqli_query($conn, $code);
 
