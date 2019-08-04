@@ -32,3 +32,9 @@ values (1, '<html>test</html>');
 ```php
 add_new_code(array(1, '<html>test</html>'));
 ```
+
+#### To get the code of a certain ID
+
+```php
+print_r( get_code_by_id(2));
+```
