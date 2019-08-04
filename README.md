@@ -18,7 +18,7 @@ use padscape;
 ```
 select * from code_ids;
 ```
-#### To insert to IDs table
+#### To insert into IDs table
 
 ```
 insert into code_ids
@@ -27,4 +27,8 @@ values (1, '<html>test</html>');
 
 ### Using PHP
 
-*****Todo*****
+#### To insert into IDs table
+
+```php
+add_new_code(array(1, '<html>test</html>'));
+```
