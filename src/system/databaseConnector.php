@@ -3,10 +3,10 @@ class DatabaseConnector {
     private $connection = null;
 
     public function __construct() {
-        $dbhost = "localhost";
-        $dbuser = "pij";
-        $dbpass = "pij";
-        $db = "padscape";
+        $dbhost = "";
+        $dbuser = "";
+        $dbpass = "";
+        $db = "";
         $this->connection = new mysqli($dbhost, $dbuser, $dbpass,$db) or die("Connect failed: %s\n". $conn -> error);
     }
 
