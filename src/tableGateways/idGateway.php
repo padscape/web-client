@@ -7,7 +7,7 @@ class IdGateway {
     }
 
     public function add_new_code($values) {
-        $this->execute("insert into `code_ids` (`CodeID`, `Code`) values ('$values[CodeID]', '$values[Code]')");
+        $this->execute("insert into `code_ids` (`CodeID`, `Code`, `Creator`) values ('$values[CodeID]', '$values[Code]', '$values[Creator]')");
     }
 
     public function update_code($values) {
