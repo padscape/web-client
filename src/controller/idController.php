@@ -11,7 +11,7 @@ class IdController {
         $this->db = $db;
         $this->requestMethod = $requestMethod;
         $this->codeId = $codeId;
-        $this->personGateway = new IdGateway($db);
+        $this->idGateway = new IdGateway($db);
     }
 
     public function process_request() {
@@ -55,7 +55,7 @@ class IdController {
     }
 
     private function get_code_by_id($id) {
-        $result = $this->personGateway->get_code_by_id($id);
+        $result = $this->idGateway->get_code_by_id($id);
 
         if (!$result) {
             return $this->not_found_error();
@@ -74,7 +74,7 @@ class IdController {
             return $this->unprocessable_entity_response();
         }
 
-        $this->personGateway->add_new_code($input);
+        $this->idGateway->add_new_code($input);
         $response['status_code_header'] = 'HTTP/1.1 201 Created';
         $response['body'] = null;
 
@@ -82,14 +82,14 @@ class IdController {
     }
 
     private function update_code_by_id($id) {
-        $result = $this->personGateway->get_code_by_id($id);
+        $result = $this->idGateway->get_code_by_id($id);
 
         if (!$result) {
             return $this->not_found_error();
         }
 
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        $this->personGateway->update_code($input);
+        $this->idGateway->update_code($input);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
 
@@ -97,12 +97,12 @@ class IdController {
     }
 
     private function delete_code($id) {
-        $result = $this->personGateway->get_code_by_id($id);
+        $result = $this->idGateway->get_code_by_id($id);
         if (!$result) {
             return $this->not_found_error();
         }
 
-        $this->personGateway->delete($id);
+        $this->idGateway->delete($id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
 
@@ -110,7 +110,6 @@ class IdController {
     }
 
     private function validate($input) {
-        print_r($input);
         if (!isset($input['Code'])) {
             return false;
         }
