@@ -14,11 +14,21 @@ class IdGateway {
         $this->execute("update `code_ids` set `Code` = '$values[Code]' where `CodeID` = '$values[CodeID]'");
     }
 
+    public function get_all() {
+        $result = $this->execute("select `CodeID` from `code_ids`");
+        $array = array();
+
+        while ($row = mysqli_fetch_assoc($result))
+            $array[] = $row;
+
+        return json_encode($array);
+    }
+
     public function get_code_by_id($id) {
         $result = $this->execute("select * from `code_ids` where CodeID = '$id'");
         $array = array();
 
-        while($row = mysqli_fetch_assoc($result))
+        while ($row = mysqli_fetch_assoc($result))
             $array[] = $row;
 
         return json_encode($array);
