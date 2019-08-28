@@ -17,7 +17,11 @@ class IdController {
     public function process_request() {
         switch ($this->requestMethod) {
             case 'GET':
-                $response = $this->get_code_by_id($this->codeId);
+                if ($this->codeId) {
+                    $response = $this->get_code_by_id($this->codeId);
+                } else {
+                    $response = $this->get_all_codes();
+                }
                 break;
             case 'POST':
                 $response = $this->make_new_code();
@@ -51,6 +55,13 @@ class IdController {
         $response['status_code_header'] = 'HTTP/1.1 422 Unprocessable Entity';
         $response['body'] = json_encode(['error' => 'Invalid input']);
 
+        return $response;
+    }
+
+    private function get_all_codes() {
+        $result = $this->idGateway->get_all();
+        $response['status_code_header'] = 'HTTP/1.1 200 OK';
+        $response['body'] = json_encode($result);
         return $response;
     }
 
