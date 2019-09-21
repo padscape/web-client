@@ -22,5 +22,5 @@ create table code_ids (
 ### Installing the code
 ```bash
 > git clone https://github.com/padscape/api.git
-> php -S 192.168.1.12:8000 -t public
+> php -S 127.0.0.1:8000 -t public
 ```
