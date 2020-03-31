@@ -1,26 +1,36 @@
 # api
 This repository contains the code used by the Padscape server to handle requests.
 
-## Using locally
-**This requires having Git (for the installation), PHP, and MySQL installed**
+## Using
+**This requires having Git (for the installation), Node.js, and MySQL installed**
 ### Creating the database
 ```bash
 > sudo mysql -u root -p
 ```
 Then, in the MySQL interface:
 ```sql
-create database padscape;
-use padscape;
-create table code_ids (
-    CodeId int,
-    Code mediumtext,
-    Creator tinytext
+CREATE DATABASE padscape;
+USE padscape;
+CREATE TABLE code_ids (
+    CodeId INT,
+    Code MEDIUMTEXT,
+    Creator TINYTEXT
 );
-
 ```
 
-### Installing the code
+### Installing the packages
 ```bash
-> git clone https://github.com/padscape/api.git
-> php -S 127.0.0.1:8000 -t public
+> npm install cors mysql express body-parser multer
 ```
+
+### Downloading the code
+```bash
+> git clone https://github.com/padscape/api
+> cd api/src/
+> node app.js
+```
+## Testing
+In `client.js` you can find a simple library to use the API.
+
+- BonfireScratch
+  - Project Moderator
