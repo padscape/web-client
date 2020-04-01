@@ -32,7 +32,7 @@ router.post('/', (req, res) => {
             con.query(`INSERT INTO code_ids VALUES (${id}, "${req.body.Code}", "${req.body.Creator}")`, (err_, result_, fields_) => {
                 if (err_) throw err_;
                 res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-                res.end(JSON.stringify({'Success': 'Request Executed'}));
+                res.end(JSON.stringify({'id': id}));
             });
         });
     }
