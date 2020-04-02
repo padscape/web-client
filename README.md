@@ -27,8 +27,10 @@ CREATE TABLE code_ids (
 ```bash
 > git clone https://github.com/padscape/api
 > cd api/src/
-> node app.js
+> sudo node app.js
 ```
+
+To run it you need to have a valid SSL certificate as it uses HTTPS. If you don't have one, simply change the code so that it runs on plain `Express` or the built-in `HTTP` module.
 ## Testing
 In `client.js` you can find a simple library to use the API.
 
