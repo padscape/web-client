@@ -14,7 +14,7 @@ let credentials = {key: privateKey, cert: certificate};
 
 app.get('/', (req, res) => {
     res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-	res.end(JSON.stringify({'Error': 'Bad Request'}));
+    res.end(JSON.stringify({'Error': 'Bad Request'}));
 });
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -23,6 +23,9 @@ app.use(bodyParser.json());
 app.use(upload.array());
 app.use(cors());
 app.use('/code', codes);
+app.on('error', err => {
+    console.log(`Error: ${err}`);
+});
 
 let httpsServer = https.createServer(credentials, app);
 httpsServer.listen(443);
