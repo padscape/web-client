@@ -1,19 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const sql = require('./connection.js');
-
-let con = sql.con;
+const mongo = require('./connection.js');
 
 router.get('/:id', (req, res) => {
-    con.query(`SELECT * FROM code_ids WHERE CodeId=${req.params.id}`, (err, result, fields) => {
-        if (err) throw err;
-        res.writeHead((result == "") ? 404 : 200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-        res.end(JSON.stringify((result == "") ? {'Error': 'Not Found'} : result));
+    mongo.findById(req.params.id, (err, result) => {
+        if (err) {
+            res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+            res.end(JSON.stringify({'Error': 'Bad Request'}));
+        }
+
+        res.writeHead((result === null) ? 404 : 200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+        res.end(JSON.stringify((result === null) ? {'Error': 'Not Found'} : result));
     });
 });
 
 router.get('/', (req, res) => {
-    con.query("SELECT * FROM code_ids", (err, result, fields) => {
+    mongo.find({}, (err, result) => {
         if (err) throw err;
         res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify(result));
@@ -21,59 +23,67 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    if (!req.body.Code || !req.body.Creator) {
+    if (!req.body.Code || !req.body.Creator || typeof req.body.Code !== "string" || typeof req.body.Creator !== "string") {
         res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify({'Error': 'Bad Request'}));
     } else {
-        con.query("SELECT COUNT(CodeId) FROM code_ids", (err, result, fields) => {
+        let db = new mongo();
+        db.Code = req.body.Code;
+        db.Creator = req.body.Creator;
+
+        db.save((err, entry) => {
             if (err) throw err;
-            let id = JSON.parse(JSON.stringify(result))[0]['COUNT(CodeId)'] + 1;
-            
-            con.query(`INSERT INTO code_ids VALUES (${id}, "${req.body.Code}", "${req.body.Creator}")`, (err_, result_, fields_) => {
-                if (err_) throw err_;
-                res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-                res.end(JSON.stringify({'id': id}));
-            });
+            res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+            res.end(JSON.stringify({'id': entry.id}));
         });
     }
 });
 
 router.put('/:id', (req, res) => {
-    if (!req.body.Code || !req.body.Creator) {
+    if (!req.body.Code || !req.body.Creator || typeof req.body.Code !== "string" || typeof req.body.Creator !== "string") {
         res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify({'Error': 'Bad Request'}));
     } else {
-        con.query(`SELECT COUNT(CodeId) FROM code_ids WHERE CodeId=${req.params.id}`, (err, result, fields) => {
-            if (err) throw err;
-            if (JSON.parse(JSON.stringify(result))[0]['COUNT(CodeId)'] === 0) {
-                res.writeHead(404, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-                res.end(JSON.stringify({'Error': 'Not Found'}));
-                return;
+        mongo.findById(req.params.id, (err, result) => {
+            if (err) {
+                res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+                res.end(JSON.stringify({'Error': 'Bad Request'}));
             }
 
-            con.query(`UPDATE code_ids SET Code="${req.body.Code}", Creator="${req.body.Creator}" WHERE CodeId=${req.params.id}`, (err_, result_, fields_) => {
-                if (err_) throw err_;
-                res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-                res.end(JSON.stringify({'Success': 'Request Executed'}));
-            });
+            if (result === null) {
+                res.writeHead(404, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+                res.end(JSON.stringify({'Error': 'Not Found'}));
+            } else {
+                result.Code = req.body.Code;
+                result.Creator = req.body.Creator;
+
+                result.save((err, entry) => {
+                    if (err) throw err;
+                    res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+                    res.end(JSON.stringify({'id': entry.id}));
+                });
+            }
         });
     }
 });
 
 router.delete('/:id', (req, res) => {
-    con.query(`SELECT COUNT(CodeId) FROM code_ids WHERE CodeId=${req.params.id}`, (err, result, fields) => {
-        if (err) throw err;
-        if (JSON.parse(JSON.stringify(result))[0]['COUNT(CodeId)'] === 0) {
-            res.writeHead(404, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-            res.end(JSON.stringify({'Error': 'Not Found'}));
-            return;
+    mongo.findById(req.params.id, (err, result) => {
+        if (err) {
+            res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+            res.end(JSON.stringify({'Error': 'Bad Request'}));
         }
 
-        con.query(`DELETE FROM code_ids WHERE CodeId=${req.params.id}`, (err_, result_, fields_) => {
-            if (err_) throw err_;
-            res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-            res.end(JSON.stringify({'Success': 'Request Executed'}));
-        });
+        if (result === null) {
+            res.writeHead(404, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+            res.end(JSON.stringify({'Error': 'Not Found'}));
+        } else {
+            mongo.deleteMany({_id: req.params.id}, (err, entry) => {
+                if (err) throw err;
+                res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+                res.end(JSON.stringify({'id': entry.id}));
+            });
+        }
     });
 });
 
