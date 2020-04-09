@@ -1,10 +1,9 @@
-const mysql = require('mysql');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://admin:SECRET@padscape-gp2qw.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
-const con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "SECRET",
-    database: "padscape"
-});
+let codeSchema = {
+    "Code": String,
+    "Creator": String
+};
 
-exports.con = con;
+module.exports = mongoose.model('', codeSchema);
