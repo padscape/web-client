@@ -1,41 +1,46 @@
 insertNewCode = (code, creator) => {
-    const http = new XMLHttpRequest();
-    http.open("POST", 'https://kouritis.ddns.net/code', true);
-    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http.send(`Code=${code}&Creator=${creator}`);
+    $.ajax({
+        url: 'https://kouritis.ddns.net/code/',
+        type: 'post',
+        data: `Code=${code}&Creator=${creator}`,
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json'
+    });
 }
 
 updateCode = (id, code, creator) => {
-    const http = new XMLHttpRequest();
-    http.open("PUT", `https://kouritis.ddns.net/code/${id}`, true);
-    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http.send(`Code=${code}&Creator=${creator}`);
+    $.ajax({
+        url: `https://kouritis.ddns.net/code/${id}`,
+        type: 'put',
+        data: `Code=${code}&Creator=${creator}`,
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json'
+    });
 }
 
 deleteCode = id => {
-    const http = new XMLHttpRequest();
-    http.open("DELETE", `https://kouritis.ddns.net/code/${id}`, true);
-    http.send();
+    $.ajax({
+        url: `https://kouritis.ddns.net/code/${id}`,
+        type: 'delete'
+    });
 }
 
 getCode = id => {
-    const http = new XMLHttpRequest();
-
-    http.onreadystatechange = () => {
-        if (http.readyState == 4 && http.status == 200) console.log(http.responseText);
-    }
-
-    http.open("GET", `https://kouritis.ddns.net/code/${id}`, true);
-    http.send();
+    $.ajax({
+        url: `https://kouritis.ddns.net/code/${id}`,
+        type: 'get',
+        success: data => {
+            console.log(data);
+        }
+    });
 }
 
 getCode = () => {
-    const http = new XMLHttpRequest();
-
-    http.onreadystatechange = () => {
-        if (http.readyState == 4 && http.status == 200) console.log(http.responseText);
-    }
-
-    http.open("GET", `https://kouritis.ddns.net/code`, true);
-    http.send();
+    $.ajax({
+        url: `https://kouritis.ddns.net/code/`,
+        type: 'get',
+        success: data => {
+            console.log(data);
+        }
+    });
 }
