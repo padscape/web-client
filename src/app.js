@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const multer = require('multer');
 const https = require('https');
+const http = require('http');
 const cors = require('cors');
 const fs = require('fs');
 const upload = multer();
@@ -23,9 +24,15 @@ app.use(bodyParser.json());
 app.use(upload.array());
 app.use(cors());
 app.use('/code', codes);
-app.on('error', err => {
-    console.log(`Error: ${err}`);
+
+app.use((err, req, res, next) => {
+    console.log(err);
 });
 
 let httpsServer = https.createServer(credentials, app);
 httpsServer.listen(443);
+
+http.createServer((req, res) => {
+    res.writeHead(301, {'Location': `https://${req.headers.host}${req.url}`});
+    res.end();
+}).listen(80);
