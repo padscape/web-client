@@ -9,8 +9,8 @@ const upload = multer();
 const app = express();
 const codes = require('./codes.js');
 
-let privateKey = fs.readFileSync('private.key', 'utf-8');
-let certificate = fs.readFileSync('server.cert', 'utf-8');
+let privateKey = fs.readFileSync('/home/pi/Desktop/api/src/private.key', 'utf-8');
+let certificate = fs.readFileSync('/home/pi/Desktop/api/src/server.cert', 'utf-8');
 let credentials = {key: privateKey, cert: certificate};
 
 app.get('/', (req, res) => {
