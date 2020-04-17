@@ -16,7 +16,7 @@
         "url": "https://github.com/padscape/api.git"
     },
     "scripts": {
-        "build": "sudo node ./app.js &> padscape_log.txt &",
+        "start": "sudo node ./src/app.js &> padscape_log.txt &",
         "test": "standard"
     },
     "dependencies": {
