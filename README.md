@@ -15,10 +15,10 @@ This repository contains the code used by the Padscape server to handle requests
 > npm start
 ```
 
-To run it you need to have a valid SSL certificate as it uses HTTPS. If you don't have one, simply change the code so that it runs on plain `Express` or the built-in `HTTP` module. For security reasons, the Atlas password for the database is not shown in the code, so you will have to set up the database locally using [Mongoose](https://code.tutsplus.com/articles/an-introduction-to-mongoose-for-mongodb-and-nodejs--cms-29527).
+Before you run the code, make sure to open `src/config.json` and see if the configurations match your needs. If you have a valid SSL certificate and want to run the API in HTTPS, set `https: true` and in the `privateKey` and `certificate` values add the paths to your SSL certificate. In `connection` enter the MongoDB database that you want to connect to. Then, go to `http://localhost` and start testing the API (if you run with HTTPS you will be redirected to a secure localhost).
 
 ## Testing
-In `client.js` you can find a simple library to use the API.
+In `client.js` you can find a simple library to use the API. It relies on jQuery's `ajax()` method to run.
 
 ## 
 

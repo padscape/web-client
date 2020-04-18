@@ -7,11 +7,8 @@ const cors = require('cors');
 const fs = require('fs');
 const upload = multer();
 const app = express();
+const config = require('./config.json');
 const codes = require('./codes.js');
-
-let privateKey = fs.readFileSync('/home/pi/Desktop/api/src/private.key', 'utf-8');
-let certificate = fs.readFileSync('/home/pi/Desktop/api/src/server.cert', 'utf-8');
-let credentials = {key: privateKey, cert: certificate};
 
 app.get('/', (req, res) => {
     res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
@@ -29,10 +26,16 @@ app.use((err, req, res, next) => {
     console.log(err);
 });
 
-let httpsServer = https.createServer(credentials, app);
-httpsServer.listen(443);
+if (config.https) {
+    let credentials = {key: fs.readFileSync(config.privateKey, 'utf-8'), cert: fs.readFileSync(config.certificate, 'utf-8')};
+    let httpsServer = https.createServer(credentials, app);
+    httpsServer.listen(443);
 
-http.createServer((req, res) => {
-    res.writeHead(301, {'Location': `https://${req.headers.host}${req.url}`});
-    res.end();
-}).listen(80);
+    http.createServer((req, res) => {
+        res.writeHead(301, {'Location': `https://${req.headers.host}${req.url}`});
+        res.end();
+    }).listen(80);
+} else {
+    console.log('no https');
+    app.listen(80);
+}
