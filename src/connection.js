@@ -5,7 +5,8 @@ mongoose.connect(config.connection, {useNewUrlParser: true, useUnifiedTopology: 
 
 let codeSchema = {
     "Code": String,
-    "Creator": String
+    "Creator": String,
+    "Libraries": String
 };
 
 module.exports = mongoose.model('', codeSchema);

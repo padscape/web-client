@@ -30,6 +30,7 @@ router.post('/', (req, res) => {
         let db = new mongo();
         db.Code = req.body.Code;
         db.Creator = req.body.Creator;
+        db.Libraries = req.body.Libraries;
 
         db.save((err, entry) => {
             if (err) throw err;
@@ -56,6 +57,7 @@ router.put('/:id', (req, res) => {
             } else {
                 result.Code = req.body.Code;
                 result.Creator = req.body.Creator;
+                result.Libraries = req.body.Libraries;
 
                 result.save((err, entry) => {
                     if (err) throw err;
