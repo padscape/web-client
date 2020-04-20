@@ -1,18 +1,18 @@
-insertNewCode = (code, creator) => {
+insertNewCode = (code, creator, libs) => {
     $.ajax({
         url: 'https://kouritis.ddns.net/code/',
         type: 'post',
-        data: `Code=${code}&Creator=${creator}`,
+        data: `Code=${code}&Creator=${creator}&Libraries=${libs}`,
         contentType: 'application/x-www-form-urlencoded',
         dataType: 'json'
     });
 }
 
-updateCode = (id, code, creator) => {
+updateCode = (id, code, creator, libs) => {
     $.ajax({
         url: `https://kouritis.ddns.net/code/${id}`,
         type: 'put',
-        data: `Code=${code}&Creator=${creator}`,
+        data: `Code=${code}&Creator=${creator}&Libraries=${libs}`,
         contentType: 'application/x-www-form-urlencoded',
         dataType: 'json'
     });
