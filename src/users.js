@@ -3,7 +3,7 @@ const router = express.Router();
 const mongo = require('./connection.js');
 
 router.get('/:id', (req, res) => {
-    mongo.codeSchema.findById(req.params.id, (err, result) => {
+    mongo.userSchema.findById(req.params.id, '-Password', (err, result) => {
         if (err) {
             res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
             res.end(JSON.stringify({'Error': 'Bad Request'}));
@@ -15,7 +15,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-    mongo.codeSchema.find({}, (err, result) => {
+    mongo.userSchema.find({}, '-Password', (err, result) => {
         if (err) throw err;
         res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify(result));
@@ -23,14 +23,13 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    if (!req.body.Code || !req.body.Creator || typeof req.body.Code !== "string" || typeof req.body.Creator !== "string") {
+    if (!req.body.Username || !req.body.Password || typeof req.body.Username !== "string" || typeof req.body.Password !== "string") {
         res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify({'Error': 'Bad Request'}));
     } else {
-        let db = new mongo.codeSchema();
-        db.Code = req.body.Code;
-        db.Creator = req.body.Creator;
-        db.Libraries = req.body.Libraries;
+        let db = new mongo.userSchema();
+        db.Username = req.body.Username;
+        db.Password = req.body.Password;
 
         db.save((err, entry) => {
             if (err) throw err;
@@ -41,11 +40,11 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    if (!req.body.Code || !req.body.Creator || typeof req.body.Code !== "string" || typeof req.body.Creator !== "string") {
+    if (!req.body.Username || !req.body.Password || typeof req.body.Username !== "string" || typeof req.body.Password !== "string") {
         res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify({'Error': 'Bad Request'}));
     } else {
-        mongo.codeSchema.findById(req.params.id, (err, result) => {
+        mongo.userSchema.findById(req.params.id, (err, result) => {
             if (err) {
                 res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
                 res.end(JSON.stringify({'Error': 'Bad Request'}));
@@ -55,9 +54,8 @@ router.put('/:id', (req, res) => {
                 res.writeHead(404, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
                 res.end(JSON.stringify({'Error': 'Not Found'}));
             } else {
-                result.Code = req.body.Code;
-                result.Creator = req.body.Creator;
-                result.Libraries = req.body.Libraries;
+                result.Username = req.body.Username;
+                result.Password = req.body.Password;
 
                 result.save((err, entry) => {
                     if (err) throw err;
@@ -70,7 +68,7 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-    mongo.codeSchema.findById(req.params.id, (err, result) => {
+    mongo.userSchema.findById(req.params.id, (err, result) => {
         if (err) {
             res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
             res.end(JSON.stringify({'Error': 'Bad Request'}));
@@ -80,7 +78,7 @@ router.delete('/:id', (req, res) => {
             res.writeHead(404, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
             res.end(JSON.stringify({'Error': 'Not Found'}));
         } else {
-            mongo.codeSchema.deleteMany({_id: req.params.id}, (err, entry) => {
+            mongo.userSchema.deleteMany({_id: req.params.id}, (err, entry) => {
                 if (err) throw err;
                 res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
                 res.end(JSON.stringify({'id': entry.id}));

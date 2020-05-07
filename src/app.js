@@ -9,6 +9,7 @@ const upload = multer();
 const app = express();
 const config = require('./config.json');
 const codes = require('./codes.js');
+const users = require('./users.js');
 
 app.get('/', (req, res) => {
     res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 app.use(upload.array());
 app.use(cors());
 app.use('/code', codes);
+app.use('/user', users);
 
 app.use((err, req, res, next) => {
     console.log(err);
