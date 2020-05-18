@@ -59,6 +59,19 @@ createUser = (username, password) => {
     });
 };
 
+loginUser = (username, password) => {
+    $.ajax({
+        url: 'https://kouritis.ddns.net/user/login/',
+        type: 'post',
+        data: `Username=${username}&Password=${password}`,
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        success: data => {
+            console.log(data);
+        }
+    });
+};
+
 updateUser = (id, username, password) => {
     $.ajax({
         url: `https://kouritis.ddns.net/user/${id}`,
