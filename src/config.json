@@ -1,6 +1,0 @@
-{
-    "https": false,
-    "privateKey": "",
-    "certificate": "",
-    "connection": "mongodb://localhost/padscape_api"
-}

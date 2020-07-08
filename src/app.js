@@ -7,7 +7,6 @@ const cors = require('cors');
 const fs = require('fs');
 const upload = multer();
 const app = express();
-const config = require('./config.json');
 const codes = require('./codes.js');
 const users = require('./users.js');
 
@@ -28,16 +27,4 @@ app.use((err, req, res, next) => {
     console.log(err);
 });
 
-if (config.https) {
-    let credentials = {key: fs.readFileSync(config.privateKey, 'utf-8'), cert: fs.readFileSync(config.certificate, 'utf-8')};
-    let httpsServer = https.createServer(credentials, app);
-    httpsServer.listen(443);
-
-    http.createServer((req, res) => {
-        res.writeHead(301, {'Location': `https://${req.headers.host}${req.url}`});
-        res.end();
-    }).listen(80);
-} else {
-    console.log('no https');
-    app.listen(80);
-}
+app.listen(80);
