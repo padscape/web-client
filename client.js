@@ -2,7 +2,7 @@
 
 createCode = (code, creator, libs) => {
     $.ajax({
-        url: 'https://kouritis.ddns.net/code/',
+        url: 'https://padscape.herokuapp.com/code/',
         type: 'post',
         data: `Code=${code}&Creator=${creator}&Libraries=${libs}`,
         contentType: 'application/x-www-form-urlencoded',
@@ -12,7 +12,7 @@ createCode = (code, creator, libs) => {
 
 updateCode = (id, code, creator, libs) => {
     $.ajax({
-        url: `https://kouritis.ddns.net/code/${id}`,
+        url: `https://padscape.herokuapp.com/code/${id}`,
         type: 'put',
         data: `Code=${code}&Creator=${creator}&Libraries=${libs}`,
         contentType: 'application/x-www-form-urlencoded',
@@ -22,14 +22,14 @@ updateCode = (id, code, creator, libs) => {
 
 deleteCode = id => {
     $.ajax({
-        url: `https://kouritis.ddns.net/code/${id}`,
+        url: `https://padscape.herokuapp.com/code/${id}`,
         type: 'delete'
     });
 };
 
 getCode = id => {
     $.ajax({
-        url: `https://kouritis.ddns.net/code/${id}`,
+        url: `https://padscape.herokuapp.com/code/${id}`,
         type: 'get',
         success: data => {
             console.log(data);
@@ -39,7 +39,7 @@ getCode = id => {
 
 getCode = () => {
     $.ajax({
-        url: `https://kouritis.ddns.net/code/`,
+        url: `https://padscape.herokuapp.com/code/`,
         type: 'get',
         success: data => {
             console.log(data);
@@ -51,7 +51,7 @@ getCode = () => {
 
 createUser = (username, password) => {
     $.ajax({
-        url: 'https://kouritis.ddns.net/user/',
+        url: 'https://padscape.herokuapp.com/user/',
         type: 'post',
         data: `Username=${username}&Password=${password}`,
         contentType: 'application/x-www-form-urlencoded',
@@ -61,7 +61,7 @@ createUser = (username, password) => {
 
 loginUser = (username, password) => {
     $.ajax({
-        url: 'https://kouritis.ddns.net/user/login/',
+        url: 'https://padscape.herokuapp.com/user/login/',
         type: 'post',
         data: `Username=${username}&Password=${password}`,
         contentType: 'application/x-www-form-urlencoded',
@@ -74,7 +74,7 @@ loginUser = (username, password) => {
 
 updateUser = (id, username, password) => {
     $.ajax({
-        url: `https://kouritis.ddns.net/user/${id}`,
+        url: `https://padscape.herokuapp.com/user/${id}`,
         type: 'put',
         data: `Username=${username}&Password=${password}`,
         contentType: 'application/x-www-form-urlencoded',
@@ -84,14 +84,14 @@ updateUser = (id, username, password) => {
 
 deleteUser = id => {
     $.ajax({
-        url: `https://kouritis.ddns.net/user/${id}`,
+        url: `https://padscape.herokuapp.com/user/${id}`,
         type: 'delete'
     });
 };
 
 getUser = id => {
     $.ajax({
-        url: `https://kouritis.ddns.net/user/${id}`,
+        url: `https://padscape.herokuapp.com/user/${id}`,
         type: 'get',
         success: data => {
             console.log(data);
@@ -101,7 +101,7 @@ getUser = id => {
 
 getUser = () => {
     $.ajax({
-        url: `https://kouritis.ddns.net/user/`,
+        url: `https://padscape.herokuapp.com/user/`,
         type: 'get',
         success: data => {
             console.log(data);
