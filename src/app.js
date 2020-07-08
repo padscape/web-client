@@ -23,6 +23,4 @@ app.use(cors());
 app.use('/code', codes);
 app.use('/user', users);
 
-app.get('/favicon.ico', (req, res) => res.status(204));
-
 app.listen(process.env.PORT || 3000);
