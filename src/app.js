@@ -15,6 +15,7 @@ app.get('/', (req, res) => {
     res.end(JSON.stringify({'Error': 'Bad Request'}));
 });
 
+app.get('/favicon.ico', (req, res) => res.status(204));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname, {dotfiles: 'allow'}));
 app.use(bodyParser.json());
