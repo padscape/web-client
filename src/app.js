@@ -15,7 +15,6 @@ app.get('/', (req, res) => {
     res.end(JSON.stringify({'Error': 'Bad Request'}));
 });
 
-app.get('/favicon.ico', (req, res) => res.status(204));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname, {dotfiles: 'allow'}));
 app.use(bodyParser.json());
@@ -24,8 +23,6 @@ app.use(cors());
 app.use('/code', codes);
 app.use('/user', users);
 
-app.use((err, req, res, next) => {
-    console.log(err);
-});
+app.get('/favicon.ico', (req, res) => res.status(204));
 
-app.listen(80);
+app.listen(process.env.PORT || 3000);

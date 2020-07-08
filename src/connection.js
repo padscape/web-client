@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-console.log(process.env)
-
 mongoose.connect(process.env.ATLAS_PASS, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
 
 let codeSchema = new Schema({
