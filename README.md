@@ -1,11 +1,11 @@
 # api
-This repository contains the code used by the Padscape server to handle requests. Built with MongoDB and Atlas Cloud, hosted with Heroku.
+This repository contains the code used by the Padscape server to handle requests, as well as the landing website. The API was built with MongoDB and Atlas Cloud, while the website was made with Node.js and JavaScript. The repository is hosted with Heroku.
 
 ## Using
 **This requires having Git (for the installation), Node.js, and MongoDB installed**
 ### Installing the packages
 ```bash
-> npm i cors mongoose express body-parser multer
+> npm i cors mongoose express express-session body-parser multer
 ```
 
 ### Downloading the code

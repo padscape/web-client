@@ -1,18 +1,32 @@
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const express = require('express');
 const multer = require('multer');
-const https = require('https');
-const http = require('http');
 const cors = require('cors');
+const path = require('path');
 const fs = require('fs');
 const upload = multer();
 const app = express();
 const codes = require('./codes.js');
 const users = require('./users.js');
 
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
+
 app.get('/', (req, res) => {
-    res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-    res.end(JSON.stringify({'Error': 'Bad Request'}));
+    if (req.session.loggedin) {
+        res.send('Welcome back, ' + request.session.username + '!');
+        res.end();
+	} else {
+        res.sendFile(path.join(__dirname + '/website/home.html'));
+    }
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname + '/website/login.html'));
 });
 
 app.use(bodyParser.urlencoded({extended: true}));

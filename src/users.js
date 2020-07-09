@@ -40,8 +40,6 @@ router.post('/', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-    let pageContents = "tets";
-
     if (!req.body.Username || typeof req.body.Username !== "string") {
         res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify({'Error': 'Bad Request', 'Details': 'Username is required.'}));
@@ -60,12 +58,14 @@ router.post('/login', (req, res) => {
                 return;
             }
 
-            if (req.body.Password == user.Password) {
+            if (req.body.Password === user.Password) {
+                req.session.loggedin = true;
+                req.session.username = req.body.Username;
                 auth = true;
             }
 
             res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-            res.end(JSON.stringify({'page': (auth) ? pageContents : ''}));
+            res.end(JSON.stringify({'page': (auth) ? 'valid' : 'invalid'}));
         });
     }
 });

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Padscape - Write, run, and upload code</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./website/style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-custom" id="navbar-custom">
+            <div class="container navbar-dark">
+                <a class="navbar-brand" href="/">Padscape</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="collapse">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a href="/" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-btn">Log in</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="./website/signup.html" class="nav-link nav-btn">Sign up</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="background">
+            <div class="login-wrap">
+                <div class="row d-md-flex no-gutters align-items-center full">
+                    <div class="col-sm-6" style="padding: 2rem">
+                        <img src="https://avatars2.githubusercontent.com/u/51507573?s=400&u=7b0c73685f03e22579236e0ef69ac1c84ef2c530&v=4" width="350" height="350" class="img-fluid align-self-center js-tilt">
+                    </div>
+                    <div class="col-sm-6" style="padding: 2rem">
+                        <h2>Log in.</h2>
+                        <div style="margin-bottom: 10px" data-validate="Username is required.">
+                            <span class="input-icon">
+                                <i class="fas fa-user" aria-hidden="true"></i>
+                            </span>
+                            <input class="input username" type="text" placeholder="Username">
+                        </div>
+                        <div style="margin-bottom: 10px" data-validate="Password is required.">
+                            <span class="input-icon">
+                                <i class="fas fa-lock" aria-hidden="true"></i>
+                            </span>
+                            <input class="input password" type="password" placeholder="Password">
+                        </div>
+                        <div style="padding-top: 20px">
+                            <button class="button bg-gradient submit" type="submit" id="loginbtn">
+                                <span>Log in</span>
+                            </button>
+                        </div>
+                        <br><br><br>
+                        <p id="invalid" style="display: none;">Invalid username or password.</p>
+                        <h6 class="mx-auto"><small>Don't have an account? <a href="./singup.html">Sign up</a></small></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="website/login.js"></script>
+    </body>
+</html>
