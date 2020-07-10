@@ -38,3 +38,16 @@ $('#loginbtn').click(() => {
 $('.js-tilt').tilt({
     scale: 1.1
 });
+
+openTab = id => {
+    $('#signup-div, #login-div').css('display', 'none');
+    $(id).css('display', 'block');
+};
+
+window.onhashchange = () => {
+    openTab(`${window.location.hash}-div`);
+};
+
+window.onload = () => {
+    openTab(`${window.location.hash}-div`);
+};
