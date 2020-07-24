@@ -100,15 +100,6 @@ router.post('/signup', (req, res) => {
                     res.end(JSON.stringify({'id': entry.id}));
                 });
             }
-
-            if (req.body.Password === user.Password) {
-                req.session.loggedin = true;
-                req.session.username = req.body.Username;
-                auth = true;
-            }
-
-            res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-            res.end(JSON.stringify({'page': 'valid'}));
         });
     }
 });
