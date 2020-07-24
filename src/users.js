@@ -96,6 +96,8 @@ router.post('/signup', (req, res) => {
         
                 db.save((err, entry) => {
                     if (err) throw err;
+                    req.session.pendingActivation = true;
+                    req.session.username = req.body.Username;
                     res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
                     res.end(JSON.stringify({'id': entry.id}));
                 });

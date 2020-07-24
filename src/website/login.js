@@ -26,7 +26,7 @@ $('#loginbtn').click(() => {
         success: data => {
             console.log(data.page)
             if (data.page === 'valid') {
-                window.location.assign(window.location.hostname);
+                window.location = window.location.hostname;
             }
 
             $('#invalid').css('display', 'block');
@@ -77,10 +77,10 @@ $('#signupbtn').click(() => {
         success: data => {
             console.log(data.page)
             if (data.page === 'valid') {
-                window.location.assign(window.location.hostname);
+                window.location = window.location.hostname;
+            } else {
+                $('.username').eq(1).parent().attr('data-validate', data.page).addClass('alert-required');
             }
-
-            $('.password').eq(1).parent().attr('data-validate', data.page).addClass('alert-required');
         }
     });
 });

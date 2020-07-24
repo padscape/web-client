@@ -17,8 +17,11 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    if (req.session.loggedin) {
-        res.send('Welcome back, ' + request.session.username + '!');
+    if (req.session.pendingActivation){
+        res.send(`Activate your account, ${request.session.username}!`);
+        res.end();
+    } else if (req.session.loggedin) {
+        res.send(`Welcome back, ${request.session.username}!`);
         res.end();
 	} else {
         res.sendFile(path.join(__dirname + '/website/home.html'));
