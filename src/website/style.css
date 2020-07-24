@@ -35,7 +35,7 @@ body {
     width: 100%;
 }
 
-html, body,.container-fluid,.row {
+html, body {
     height: 100%;
 }
 
@@ -86,9 +86,7 @@ html, body,.container-fluid,.row {
     color: #000;
     opacity: 1;
     position: absolute;
-    top: 90%;
     left: 50%;
-    transform: translate(-50%,-90%);
 }
 
 .open-source {
@@ -97,7 +95,7 @@ html, body,.container-fluid,.row {
     padding: 2rem;
     background-color: #6927ff;
     color: #fff;
-    border-radius: 15px 50px;
+    border-radius: 1rem 3.125rem;
 }
 
 .background {
@@ -143,20 +141,45 @@ html, body,.container-fluid,.row {
 }
 
 .alert-required::before {
-    content: attr(data-validate);
+    content: '!';
     position: absolute;
-    max-width: 70%;
     background-color: white;
     border: 1px solid #c80000;
     border-radius: 13px;
-    padding: 4px 25px 4px 10px;
+    padding: 4px 12px 4px 12px;
     margin-top: 10px;
     right: 40px;
     pointer-events: none;
     color: #c80000;
     font-size: 13px;
     line-height: 1.4;
-    text-align: left;
+    text-align: center;
+    animation: zoomIn 0.2s forwards;
+}
+
+.alert-required:hover::before {
+    content: attr(data-validate);
+    max-width: 80%;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.2);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes zoomOut {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(0.2);
+    }
 }
 
 .open-source a,.open-source a:hover {
@@ -167,10 +190,11 @@ html, body,.container-fluid,.row {
     position: relative;
     visibility: hidden;
     opacity: 0;
+    padding: 2rem;
     animation: slideInUp .5s ease-out 1s 1 forwards;
 }
 
-h1,h2 {
+h1, h2 {
     font-weight: 500;
     text-transform: uppercase;
 }
@@ -204,7 +228,7 @@ a,a:hover,a:focus,a:active {
 .button {
     display: inline-block;
     font-weight: 500;
-    font-size: 17px;
+    font-size: 1rem;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: #fff;
@@ -214,21 +238,21 @@ a,a:hover,a:focus,a:active {
 .button::before {
     content: '';
     display: inline-block;
-    height: 40px;
+    height: 2.5rem;
     position: absolute;
-    bottom: -5px;
-    left: 30px;
-    right: 30px;
+    bottom: .3125rem;
+    left: 1.875rem;
+    right: 1.875rem;
     z-index: -1;
     border-radius: 30rem;
-    filter: blur(20px) brightness(0.95);
+    filter: blur(1.25rem) brightness(0.95);
     transform-style: preserve-3d;
     transition: all .3s ease-out;
 }
 
 .button span {
     display: inline-block;
-    padding: 18px 60px;
+    padding: 1.125rem 3.75rem;
     border-radius: 50rem;
     position: relative;
     z-index: 2;
@@ -244,7 +268,7 @@ a,a:hover,a:focus,a:active {
 
 .button:hover::before {
     bottom: 0;
-    filter: blur(10px) brightness(0.95);
+    filter: blur(0.625rem) brightness(0.95);
 }
 
 .button:focus,.button:active,.button:hover {

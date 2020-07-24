@@ -1,27 +1,26 @@
 $('#loginbtn').click(() => {
-    $('.username').parent().removeClass('alert-required');
-    $('.password').parent().removeClass('alert-required');
+    $('.username, .password').parent().removeClass('alert-required');
 
-    let required = false;
+    let valid = true;
 
-    if (!$('.username').val() || $('.username').val().trim() === '') {
-        $('.username').parent().addClass('alert-required');
-        required = true;
+    if (!$('.username').eq(0).val() || $('.username').eq(0).val().trim() === '') {
+        $('.username').eq(0).parent().addClass('alert-required');
+        valid = false;
     }
 
-    if (!$('.password').val() || $('.password').val().trim() === '') {
-        $('.password').parent().addClass('alert-required');
-        required = true;
+    if (!$('.password').eq(0).val() || $('.password').eq(0).val().trim() === '') {
+        $('.password').eq(0).parent().addClass('alert-required');
+        valid = false;
     }
 
-    if (required) {
+    if (!valid) {
         return;
     }
 
     $.ajax({
         url: 'https://padscape.herokuapp.com/user/login/',
         type: 'post',
-        data: `Username=${$('.username').val()}&Password=${$('.password').val()}`,
+        data: `Username=${$('.username').eq(0).val()}&Password=${$('.password').eq(0).val()}`,
         contentType: 'application/x-www-form-urlencoded',
         dataType: 'json',
         success: data => {
@@ -31,6 +30,57 @@ $('#loginbtn').click(() => {
             }
 
             $('#invalid').css('display', 'block');
+        }
+    });
+});
+
+$('#signupbtn').click(() => {
+    $('.username, .password, .email').parent().removeClass('alert-required');
+
+    let valid = true;
+
+    if (!$('.username').eq(1).val() || $('.username').eq(1).val().trim() === '') {
+        $('.username').eq(1).parent().addClass('alert-required');
+        valid = false;
+    }
+
+    if (!$('.password').eq(1).val() || $('.password').eq(1).val().trim() === '') {
+        $('.password').eq(1).parent().attr('data-validate', 'Password is required.').addClass('alert-required');
+        valid = false;
+    } else if ($('.password').eq(1).val().length < 8) {
+        $('.password').eq(1).parent().attr('data-validate', 'Password must be longer than 8 characters.').addClass('alert-required');
+        valid = false;
+    }
+
+    if (!$('.email').val() || $('.email').val().trim() === '') {
+        $('.email').parent().attr('data-validate', 'Email is required.').addClass('alert-required');
+        valid = false;
+    } else {
+        let regex = /\S+@\S+\.\S+/;
+
+        if (!regex.test($('.email').val())) {
+            $('.email').parent().attr('data-validate', 'Invalid email.').addClass('alert-required');
+            valid = false;
+        }
+    }
+
+    if (!valid) {
+        return;
+    }
+
+    $.ajax({
+        url: 'https://padscape.herokuapp.com/user/signup/',
+        type: 'post',
+        data: `Username=${$('.username').eq(1).val()}&Password=${$('.password').eq(1).val()}&Email=${$('.email').val()}`,
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        success: data => {
+            console.log(data.page)
+            if (data.page === 'valid') {
+                window.location.assign(window.location.hostname);
+            }
+
+            $('.password').eq(1).parent().attr('data-validate', data.page).addClass('alert-required');
         }
     });
 });

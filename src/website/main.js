@@ -10,6 +10,15 @@ navbarTransition = () => {
     }
 };
 
+fixSizes = () => {
+    let fullHeight = $('.full1')[0].offsetHeight;
+    fullHeight = Math.max(fullHeight, window.innerHeight);
+    $('.full1').css('height', `${fullHeight}px`);
+    let offset = fullHeight / window.innerHeight * 100 - 10;
+    $('.down-btn').css({'top': `${offset}%`, 'transform': `translate(-50%, -${offset}%)`});
+    console.log(offset)
+}
+
 $(window).scroll(() => {
     clearTimeout(timeout);  
     timeout = setTimeout(() => {
@@ -17,6 +26,9 @@ $(window).scroll(() => {
     }, 50);
 });
 
+window.onresize = fixSizes;
+
 $(document).ready(() => {
     navbarTransition();
+    fixSizes();
 });

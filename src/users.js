@@ -23,13 +23,16 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    if (!req.body.Username || !req.body.Password || typeof req.body.Username !== "string" || typeof req.body.Password !== "string") {
+    if (!req.body.Username || !req.body.Password || !req.body.Email ||
+        typeof req.body.Username !== "string" || typeof req.body.Password !== "string" ||
+        typeof req.body.Email !== "string") {
         res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify({'Error': 'Bad Request'}));
     } else {
         let db = new mongo.userSchema();
         db.Username = req.body.Username;
         db.Password = req.body.Password;
+        db.Email = req.body.Email;
 
         db.save((err, entry) => {
             if (err) throw err;
@@ -66,6 +69,46 @@ router.post('/login', (req, res) => {
 
             res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
             res.end(JSON.stringify({'page': (auth) ? 'valid' : 'invalid'}));
+        });
+    }
+});
+
+router.post('/signup', (req, res) => {
+    if (!req.body.Username || typeof req.body.Username !== "string") {
+        res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+        res.end(JSON.stringify({'Error': 'Bad Request', 'Details': 'Username is required.'}));
+    } else if (!req.body.Password || typeof req.body.Password !== "string") {
+        res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+        res.end(JSON.stringify({'Error': 'Bad Request', 'Details': 'Password is required.'}));
+    } else {
+        mongo.userSchema.findOne({Username: req.body.Username}, (err, user) => {
+            if (err) throw err;
+
+            if (user !== null) {
+                res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+                res.end(JSON.stringify({'page': 'Username is taken.'}));
+                return;
+            } else {
+                let db = new mongo.userSchema();
+                db.Username = req.body.Username;
+                db.Password = req.body.Password;
+                db.Email = req.body.Email;
+        
+                db.save((err, entry) => {
+                    if (err) throw err;
+                    res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+                    res.end(JSON.stringify({'id': entry.id}));
+                });
+            }
+
+            if (req.body.Password === user.Password) {
+                req.session.loggedin = true;
+                req.session.username = req.body.Username;
+                auth = true;
+            }
+
+            res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+            res.end(JSON.stringify({'page': 'valid'}));
         });
     }
 });
