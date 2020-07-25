@@ -17,25 +17,22 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    // console.log('Is activated: ' + req.session.pendingActivation);
-
-    // if (req.session.pendingActivation) {
-    //     res.sendFile(path.join(__dirname + '/website/activate.html'));
-    //     return;
-    // } else {
-    //     req.session.pendingActivation = false;
-    // }
+    if (req.session.pendingActivation) {
+        res.sendFile(path.join(__dirname + '/website/activate.html'));
+        return;
+    } else {
+        req.session.pendingActivation = false;
+    }
     
-    // if (req.session.loggedin) {
-    //     res.send(`Welcome back, ${req.session.username}!`);
-    //     res.end();
-    //     return;
-    // }
+    if (req.session.loggedin) {
+        res.send(`Welcome back, ${req.session.username}!`);
+        res.end();
+        return;
+    }
     
-    // req.session.loggedin = false;
-    // req.session.username = '';
-    // res.sendFile(path.join(__dirname + '/website/home.html'));
-    res.sendFile(path.join(__dirname + '/website/activate.html'));
+    req.session.loggedin = false;
+    req.session.username = '';
+    res.sendFile(path.join(__dirname + '/website/home.html'));
 });
 
 app.get('/login', (req, res) => {
