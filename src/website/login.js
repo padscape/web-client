@@ -24,9 +24,8 @@ $('#loginbtn').click(() => {
         contentType: 'application/x-www-form-urlencoded',
         dataType: 'json',
         success: data => {
-            console.log(data.page)
             if (data.page === 'valid') {
-                window.location = window.location.hostname;
+                window.location.assign(`${window.location.protocol}//${window.location.host}`);
             }
 
             $('#invalid').css('display', 'block');
@@ -75,9 +74,8 @@ $('#signupbtn').click(() => {
         contentType: 'application/x-www-form-urlencoded',
         dataType: 'json',
         success: data => {
-            console.log(data.page)
-            if (data.page === 'valid') {
-                window.location = window.location.hostname;
+            if (data.id) {
+                window.location.assign(`${window.location.protocol}//${window.location.host}`);
             } else {
                 $('.username').eq(1).parent().attr('data-validate', data.page).addClass('alert-required');
             }

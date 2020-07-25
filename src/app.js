@@ -17,15 +17,25 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    if (req.session.pendingActivation){
-        res.send(`Activate your account, ${request.session.username}!`);
+    console.log('Is activated: ' + req.session.pendingActivation);
+
+    if (req.session.pendingActivation) {
+        res.send(`Activate your account, ${req.session.username}!`);
         res.end();
-    } else if (req.session.loggedin) {
-        res.send(`Welcome back, ${request.session.username}!`);
-        res.end();
-	} else {
-        res.sendFile(path.join(__dirname + '/website/home.html'));
+        return;
+    } else {
+        req.session.pendingActivation = false;
     }
+    
+    if (req.session.loggedin) {
+        res.send(`Welcome back, ${req.session.username}!`);
+        res.end();
+        return;
+    }
+    
+    req.session.loggedin = false;
+    req.session.username = '';
+    res.sendFile(path.join(__dirname + '/website/home.html'));
 });
 
 app.get('/login', (req, res) => {
