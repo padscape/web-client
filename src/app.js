@@ -4,7 +4,6 @@ const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
 const upload = multer();
 const app = express();
 const codes = require('./codes.js');

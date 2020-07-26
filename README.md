@@ -1,24 +1,23 @@
 # api
-This repository contains the code used by the Padscape server to handle requests, as well as the landing website. The API was built with MongoDB and Atlas Cloud, while the website was made with Node.js and JavaScript. The repository is hosted with Heroku.
+This repository contains the code used by the Padscape server to handle requests, as well as the landing website.
 
 ## Using
-**This requires having Git (for the installation), Node.js, and MongoDB installed**
-### Installing the packages
+**This requires having Git, Node.js, and MongoDB installed**
 ```bash
-> npm i cors mongoose express express-session body-parser multer
-```
-
-### Downloading the code
-```bash
-> git clone https://github.com/padscape/api
+> git clone https://github.com/padscape/web-client
 > cd api
-> npm start
+> npm init
 ```
-
-Before you run the code, make sure to add a valid connection URI to the Atlas Cloud database (the one we are using cannot be found in the code for security purposes). Then, go to `http://localhost:3000` and start testing the API.
 
 ## Testing
-In `client.js` you can find a simple library to use the API. It relies on jQuery's `ajax()` method to run.
+Before you run the code, make sure to add a valid connection URI to the MongoDB Atlas database or comment out line 4 in `connection.js` (the one we are using cannot be found in the code for security reasons). Then, go to http://localhost:3000 and start testing the website and API locally. In `client.js` you can find a simple library to use the API. It relies on jQuery's `ajax()` method to run.
+
+## Technologies Used
+- Heroku for deploying the website
+- MongoDB Atlas for hosting the database in the cloud
+- Node.js for the back-end
+- jQuery for document traversal
+- Bootstrap 4 for the website styling
 
 ## 
 

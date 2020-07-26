@@ -1,4 +1,5 @@
 const express = require('express');
+const mail = require('nodemailer');
 const router = express.Router();
 const mongo = require('./connection.js');
 
@@ -80,6 +81,9 @@ router.post('/signup', (req, res) => {
     } else if (!req.body.Password || typeof req.body.Password !== "string") {
         res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify({'Error': 'Bad Request', 'Details': 'Password is required.'}));
+    } else if (!req.body.Email || typeof req.body.Email !== "string") {
+        res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+        res.end(JSON.stringify({'Error': 'Bad Request', 'Details': 'Email is required.'}));
     } else {
         mongo.userSchema.findOne({Username: req.body.Username}, (err, user) => {
             if (err) throw err;
@@ -100,6 +104,25 @@ router.post('/signup', (req, res) => {
                     req.session.username = req.body.Username;
                     res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
                     res.end(JSON.stringify({'id': entry.id}));
+                });
+
+                let transporter = mail.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'padscapeapp@gmail.com',
+                        pass: process.env.EMAIL_PASS
+                    }
+                });
+
+                let options = {
+                    from: 'padscapeapp@gmail.com',
+                    to: req.body.Email,
+                    subject: 'Account Activation - Padscape',
+                    text: 'Hey'
+                };
+
+                transporter.sendMail(options, (err, info) => {
+                    if (err) throw err;
                 });
             }
         });
