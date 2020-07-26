@@ -9,7 +9,7 @@ $('#accountbtn').click(() => {
             if (data.valid === 'true') {
                 window.location.assign(`${window.location.protocol}//${window.location.host}`);
             } else {
-                $('#invalid').val('Invalid activation code');
+                $('#invalid').text('Invalid activation code');
             }
         }
     });

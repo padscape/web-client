@@ -151,6 +151,7 @@ router.post('/activate', (req, res) => {
             } else {
                 let valid = 'false';
 
+                console.log(req.body.Activation, result.Activation);
                 if (req.body.Activation === result.Activation) {
                     req.session.pendingActivation = false;
                     req.session.loggedin = true;
