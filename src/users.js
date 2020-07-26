@@ -94,9 +94,11 @@ router.post('/signup', (req, res) => {
                 return;
             } else {
                 let db = new mongo.userSchema();
+                let code = Math.floor(Math.random() * 90000) + 10000;
                 db.Username = req.body.Username;
                 db.Password = req.body.Password;
                 db.Email = req.body.Email;
+                db.Activation = code;
         
                 db.save((err, entry) => {
                     if (err) throw err;
@@ -121,7 +123,7 @@ router.post('/signup', (req, res) => {
                     from: 'padscapeapp@gmail.com',
                     to: req.body.Email,
                     subject: 'Account Activation - Padscape',
-                    text: 'Hey'
+                    html: `<h1>Greetings! , ${req.body.Username}!</h1><p>Welcome to the Padscape community! We hope you find our software useful and you have a great time here! The activation code you will need to be able to use your account is: ${code}</p><h3>The Padscape Team</h3>`
                 };
 
                 transporter.sendMail(options, (err, info) => {

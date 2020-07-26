@@ -12,7 +12,8 @@ let codeSchema = new Schema({
 let userSchema = new Schema({
     "Username": String,
     "Password": String,
-    "Email": String
+    "Email": String,
+    "Activation": Number
 });
 
 exports.codeSchema = mongoose.model('Code', codeSchema);
