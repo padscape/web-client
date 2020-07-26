@@ -107,7 +107,10 @@ router.post('/signup', (req, res) => {
                 });
 
                 let transporter = mail.createTransport({
-                    service: 'gmail',
+                    host: 'smtp.gmail.com',
+                    port: 587,
+                    secure: false,
+                    requireTLS: true,
                     auth: {
                         user: 'padscapeapp@gmail.com',
                         pass: process.env.EMAIL_PASS
