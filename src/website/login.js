@@ -28,7 +28,7 @@ $('#loginbtn').click(() => {
                 window.location.assign(`${window.location.protocol}//${window.location.host}`);
             }
 
-            $('#invalid').css('display', 'block');
+            $('#invalid').text('Invalid username or password');
         }
     });
 });

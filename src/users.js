@@ -123,12 +123,42 @@ router.post('/signup', (req, res) => {
                     from: 'padscapeapp@gmail.com',
                     to: req.body.Email,
                     subject: 'Account Activation - Padscape',
-                    html: `<h1>Greetings! , ${req.body.Username}!</h1><p>Welcome to the Padscape community! We hope you find our software useful and you have a great time here! The activation code you will need to be able to use your account is: ${code}</p><h3>The Padscape Team</h3>`
+                    html: `<h1>Greetings, ${req.body.Username}!</h1><p>Welcome to the Padscape community! We hope you find our software useful and you have a great time here! The activation code you will need to be able to use your account is: ${code}</p><h3>The Padscape Team</h3>`
                 };
 
                 transporter.sendMail(options, (err, info) => {
                     if (err) throw err;
                 });
+            }
+        });
+    }
+});
+
+router.post('/activate', (req, res) => {
+    if (!req.body.Activation || typeof req.body.Activation !== "string") {
+        res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+        res.end(JSON.stringify({'Error': 'Bad Request', 'Details': 'Activation code is required.'}));
+    } else {
+        mongo.userSchema.find({Username: req.session.username}, (err, result) => {
+            if (err) {
+                res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+                res.end(JSON.stringify({'Error': 'Bad Request'}));
+            }
+
+            if (result === null) {
+                res.writeHead(404, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+                res.end(JSON.stringify({'Error': 'Not Found'}));
+            } else {
+                let valid = 'false';
+
+                if (req.body.Activation === result.Activation) {
+                    req.session.pendingActivation = false;
+                    req.session.loggedin = true;
+                    valid = 'true';
+                }
+
+                res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+                res.end(JSON.stringify({'valid': valid}));
             }
         });
     }

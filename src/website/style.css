@@ -107,6 +107,11 @@ html, body {
     color: #fff;
 }
 
+#invalid {
+    font-weight: 500;
+    color: #ff0000;
+}
+
 .login-wrap {
     position: absolute;
     width: 70%;
