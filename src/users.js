@@ -139,28 +139,25 @@ router.post('/activate', (req, res) => {
         res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         res.end(JSON.stringify({'Error': 'Bad Request', 'Details': 'Activation code is required.'}));
     } else {
-        mongo.userSchema.find({Username: req.session.username}, (err, result) => {
-            if (err) {
-                res.writeHead(400, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-                res.end(JSON.stringify({'Error': 'Bad Request'}));
-            }
+        mongo.userSchema.findOne({Username: req.session.username}, (err, user) => {
+            if (err) throw err;
 
-            if (result === null) {
-                res.writeHead(404, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-                res.end(JSON.stringify({'Error': 'Not Found'}));
-            } else {
-                let valid = 'false';
-
-                console.log(req.body.Activation, result.Activation);
-                if (req.body.Activation === result.Activation) {
-                    req.session.pendingActivation = false;
-                    req.session.loggedin = true;
-                    valid = 'true';
-                }
-
+            if (user === null) {
                 res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-                res.end(JSON.stringify({'valid': valid}));
+                res.end(JSON.stringify({'valid': ''}));
+                return;
             }
+
+            let valid = 'false';
+
+            if (req.body.Activation === user.Activation) {
+                req.session.pendingActivation = false;
+                req.session.loggedin = true;
+                valid = 'true';
+            }
+
+            res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+            res.end(JSON.stringify({'valid': valid}));
         });
     }
 });
