@@ -7,14 +7,6 @@ const app = express();
 const codes = require("./codes.js");
 const users = require("./users.js");
 
-app.use(
-  session({
-    secret: "secret",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname, { dotfiles: "allow" }));
 app.use(bodyParser.json());
