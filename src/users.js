@@ -5,30 +5,39 @@ const router = express.Router();
 const mongo = require("./connection.js");
 
 router.get("/:id", (req, res) => {
-  mongo.userSchema.findById(req.params.id, "-Password", (err, result) => {
-    if (err) {
-      res.writeHead(400, {
+  mongo.userSchema.findById(
+    req.params.id,
+    "-Password -Email -Activation",
+    (err, result) => {
+      if (err) {
+        res.writeHead(400, {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        });
+        res.end(JSON.stringify({ Error: "Bad Request" }));
+      }
+
+      res.writeHead(result === null ? 404 : 200, {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       });
-      res.end(JSON.stringify({ Error: "Bad Request" }));
-    }
 
-    res.writeHead(result === null ? 404 : 200, {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    });
-    res.end(JSON.stringify(result === null ? { Error: "Not Found" } : result));
-  });
+      res.end(
+        JSON.stringify(result === null ? { Error: "Not Found" } : result)
+      );
+    }
+  );
 });
 
 router.get("/", (req, res) => {
-  mongo.userSchema.find({}, "-Password", (err, result) => {
+  mongo.userSchema.find({}, "-Password -Email -Activation", (err, result) => {
     if (err) throw err;
+
     res.writeHead(200, {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
+
     res.end(JSON.stringify(result));
   });
 });
@@ -46,6 +55,7 @@ router.post("/", (req, res) => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
+
     res.end(JSON.stringify({ Error: "Bad Request" }));
   } else {
     let db = new mongo.userSchema();
@@ -55,10 +65,12 @@ router.post("/", (req, res) => {
 
     db.save((err, entry) => {
       if (err) throw err;
+
       res.writeHead(200, {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       });
+
       res.end(JSON.stringify({ id: entry.id }));
     });
   }
@@ -70,6 +82,7 @@ router.post("/login", (req, res) => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
+
     res.end(
       JSON.stringify({ Error: "Bad Request", Details: "Username is required." })
     );
@@ -78,6 +91,7 @@ router.post("/login", (req, res) => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
+
     res.end(
       JSON.stringify({ Error: "Bad Request", Details: "Password is required." })
     );
@@ -90,11 +104,12 @@ router.post("/login", (req, res) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         });
+
         res.end(JSON.stringify({ page: "" }));
         return;
       }
 
-      const token = "";
+      let token = "";
 
       if (req.body.Password === user.Password) {
         token = jwt.sign(
@@ -122,6 +137,7 @@ router.post("/signup", (req, res) => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
+
     res.end(
       JSON.stringify({ Error: "Bad Request", Details: "Username is required." })
     );
@@ -130,6 +146,7 @@ router.post("/signup", (req, res) => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
+
     res.end(
       JSON.stringify({ Error: "Bad Request", Details: "Password is required." })
     );
@@ -138,6 +155,7 @@ router.post("/signup", (req, res) => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
+
     res.end(
       JSON.stringify({ Error: "Bad Request", Details: "Email is required." })
     );
@@ -163,12 +181,12 @@ router.post("/signup", (req, res) => {
 
         db.save((err, entry) => {
           if (err) throw err;
-          req.session.pendingActivation = true;
-          req.session.username = req.body.Username;
+
           res.writeHead(200, {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
           });
+
           res.end(JSON.stringify({ id: entry.id }));
         });
 
@@ -204,6 +222,7 @@ router.post("/activate", (req, res) => {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
+
     res.end(
       JSON.stringify({
         Error: "Bad Request",

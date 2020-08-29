@@ -1,4 +1,3 @@
-const session = require("express-session");
 const bodyParser = require("body-parser");
 const express = require("express");
 const multer = require("multer");
