@@ -77,6 +77,7 @@ router.post("/", (req, res) => {
 });
 
 router.post("/login", (req, res) => {
+  console.log("A");
   if (!req.body.Username || typeof req.body.Username !== "string") {
     res.writeHead(200, {
       "Content-Type": "application/json",
@@ -96,6 +97,7 @@ router.post("/login", (req, res) => {
       JSON.stringify({ Error: "Bad Request", Details: "Password is required." })
     );
   } else {
+    console.log("B");
     mongo.userSchema.findOne({ Username: req.body.Username }, (err, user) => {
       if (err) throw err;
 
