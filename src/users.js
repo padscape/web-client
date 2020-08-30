@@ -77,7 +77,6 @@ router.post("/", (req, res) => {
 });
 
 router.post("/login", (req, res) => {
-  console.log("A");
   if (!req.body.Username || typeof req.body.Username !== "string") {
     res.writeHead(200, {
       "Content-Type": "application/json",
@@ -97,7 +96,6 @@ router.post("/login", (req, res) => {
       JSON.stringify({ Error: "Bad Request", Details: "Password is required." })
     );
   } else {
-    console.log("B");
     mongo.userSchema.findOne({ Username: req.body.Username }, (err, user) => {
       if (err) throw err;
 
@@ -173,9 +171,17 @@ router.post("/signup", (req, res) => {
         res.end(JSON.stringify({ page: "Username is taken." }));
         return;
       } else {
-        //TODO: Add JWT
+        let token = jwt.sign(
+          {
+            data: `${req.body.Username}${req.body.Password}`,
+          },
+          process.env.SECRET,
+          { expiresIn: "1h" }
+        );
+
         let db = new mongo.userSchema();
-        let code = Math.floor(Math.random() * 90000) + 10000;
+        let code = Math.floor(Math.random() * 900000) + 100000;
+
         db.Username = req.body.Username;
         db.Password = req.body.Password;
         db.Email = req.body.Email;
@@ -189,7 +195,7 @@ router.post("/signup", (req, res) => {
             "Access-Control-Allow-Origin": "*",
           });
 
-          res.end(JSON.stringify({ id: entry.id }));
+          res.end(JSON.stringify({ page: token }));
         });
 
         let transporter = mail.createTransport({
