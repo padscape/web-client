@@ -415,6 +415,7 @@ router.delete("/", (req, res) => {
               { _id: req.params.id },
               (err, entry) => {
                 if (err) throw err;
+                console.log(`DELETED ${username}`);
                 res.writeHead(200, {
                   "Content-Type": "application/json",
                   "Access-Control-Allow-Origin": "*",

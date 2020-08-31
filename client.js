@@ -98,9 +98,9 @@ deleteUser = (token) => {
   });
 };
 
-getUser = (id) => {
+getUser = (username) => {
   $.ajax({
-    url: `https://padscape.herokuapp.com/user/${id}`,
+    url: `https://padscape.herokuapp.com/user/${username}`,
     type: "get",
     success: (data) => {
       console.log(data);
