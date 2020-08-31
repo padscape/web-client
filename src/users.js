@@ -415,7 +415,7 @@ router.delete("/", (req, res) => {
               { Username: username, Password: password },
               (err, entry) => {
                 if (err) throw err;
-                console.log(`DELETED ${username}`);
+
                 res.writeHead(200, {
                   "Content-Type": "application/json",
                   "Access-Control-Allow-Origin": "*",
