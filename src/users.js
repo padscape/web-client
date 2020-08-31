@@ -348,6 +348,14 @@ router.put("/", (req, res) => {
             result.Username = req.body.Username;
             result.Password = req.body.Password;
 
+            let token = jwt.sign(
+              {
+                data: `${req.body.Username} ${req.body.Password}`,
+              },
+              process.env.SECRET,
+              { expiresIn: "1h" }
+            );
+
             result.save((err, entry) => {
               if (err) throw err;
               res.writeHead(200, {
@@ -355,7 +363,7 @@ router.put("/", (req, res) => {
                 "Access-Control-Allow-Origin": "*",
               });
 
-              res.end(JSON.stringify({ id: entry.id }));
+              res.end(JSON.stringify({ page: token }));
             });
           }
         }
