@@ -412,7 +412,7 @@ router.delete("/", (req, res) => {
             res.end(JSON.stringify({ Error: "Not Found" }));
           } else {
             mongo.userSchema.deleteMany(
-              { _id: req.params.id },
+              { Username: username, Password: password },
               (err, entry) => {
                 if (err) throw err;
                 console.log(`DELETED ${username}`);
