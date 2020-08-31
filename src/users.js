@@ -95,6 +95,18 @@ router.post("/login", (req, res) => {
     res.end(
       JSON.stringify({ Error: "Bad Request", Details: "Password is required." })
     );
+  } else if (/\s/.test(req.body.Username) || /\s/.test(req.body.Password)) {
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    });
+
+    res.end(
+      JSON.stringify({
+        Error: "Bad Request",
+        Details: "Username or password cannot contain spaces.",
+      })
+    );
   } else {
     mongo.userSchema.findOne({ Username: req.body.Username }, (err, user) => {
       if (err) throw err;
@@ -114,7 +126,7 @@ router.post("/login", (req, res) => {
       if (req.body.Password === user.Password) {
         token = jwt.sign(
           {
-            data: `${req.body.Username}${req.body.Password}`,
+            data: `${req.body.Username} ${req.body.Password}`,
           },
           process.env.SECRET,
           { expiresIn: "1h" }
@@ -150,6 +162,18 @@ router.post("/signup", (req, res) => {
     res.end(
       JSON.stringify({ Error: "Bad Request", Details: "Password is required." })
     );
+  } else if (/\s/.test(req.body.Username) || /\s/.test(req.body.Password)) {
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    });
+
+    res.end(
+      JSON.stringify({
+        Error: "Bad Request",
+        Details: "Username or password cannot contain spaces.",
+      })
+    );
   } else if (!req.body.Email || typeof req.body.Email !== "string") {
     res.writeHead(200, {
       "Content-Type": "application/json",
@@ -173,7 +197,7 @@ router.post("/signup", (req, res) => {
       } else {
         let token = jwt.sign(
           {
-            data: `${req.body.Username}${req.body.Password}`,
+            data: `${req.body.Username} ${req.body.Password}`,
           },
           process.env.SECRET,
           { expiresIn: "1h" }
@@ -237,111 +261,165 @@ router.post("/activate", (req, res) => {
         Details: "Activation code is required.",
       })
     );
-  } else {
-    mongo.userSchema.findOne(
-      { Username: req.session.username },
-      (err, user) => {
-        if (err) throw err;
+  } else if (!req.body.Key || typeof req.body.Key !== "string") {
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    });
 
-        if (user === null) {
+    res.end(
+      JSON.stringify({
+        Error: "Bad Request",
+        Details: "User Token is required.",
+      })
+    );
+  } else {
+    jwt.verify(req.body.Key, process.env.SECRET, (err, decoded) => {
+      data = decoded.data.split(" ");
+      username = data[0];
+      password = data[1];
+
+      mongo.userSchema.findOne(
+        { Username: username, Password: password },
+        (err, user) => {
+          if (err) throw err;
+
+          if (user === null) {
+            res.writeHead(200, {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            });
+            res.end(JSON.stringify({ valid: "" }));
+            return;
+          }
+
+          let valid = "false";
+
+          if (req.body.Activation === user.Activation) {
+            valid = "true";
+          }
+
           res.writeHead(200, {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
           });
-          res.end(JSON.stringify({ valid: "" }));
-          return;
+
+          res.end(JSON.stringify({ valid: valid }));
         }
-
-        let valid = "false";
-
-        if (req.body.Activation === user.Activation) {
-          req.session.pendingActivation = false;
-          req.session.loggedin = true;
-          valid = "true";
-        }
-
-        res.writeHead(200, {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        });
-        res.end(JSON.stringify({ valid: valid }));
-      }
-    );
+      );
+    });
   }
 });
 
-router.put("/:id", (req, res) => {
-  if (
-    !req.body.Username ||
-    !req.body.Password ||
-    typeof req.body.Username !== "string" ||
-    typeof req.body.Password !== "string"
-  ) {
+router.put("/", (req, res) => {
+  if (!req.body.Key || typeof req.body.Key !== "string") {
     res.writeHead(400, {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     });
+
     res.end(JSON.stringify({ Error: "Bad Request" }));
   } else {
-    mongo.userSchema.findById(req.params.id, (err, result) => {
-      if (err) {
-        res.writeHead(400, {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        });
-        res.end(JSON.stringify({ Error: "Bad Request" }));
-      }
+    jwt.verify(req.body.Key, process.env.SECRET, (err, decoded) => {
+      data = decoded.data.split(" ");
+      username = data[0];
+      password = data[1];
 
-      if (result === null) {
-        res.writeHead(404, {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        });
-        res.end(JSON.stringify({ Error: "Not Found" }));
-      } else {
-        result.Username = req.body.Username;
-        result.Password = req.body.Password;
+      mongo.userSchema.findOne(
+        { Username: username, Password: password },
+        (err, result) => {
+          if (err) {
+            res.writeHead(400, {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            });
 
-        result.save((err, entry) => {
-          if (err) throw err;
-          res.writeHead(200, {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          });
-          res.end(JSON.stringify({ id: entry.id }));
-        });
-      }
+            res.end(JSON.stringify({ Error: "Bad Request" }));
+          }
+
+          if (result === null) {
+            res.writeHead(404, {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            });
+
+            res.end(JSON.stringify({ Error: "Not Found" }));
+          } else {
+            result.Username = req.body.Username;
+            result.Password = req.body.Password;
+
+            result.save((err, entry) => {
+              if (err) throw err;
+              res.writeHead(200, {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              });
+
+              res.end(JSON.stringify({ id: entry.id }));
+            });
+          }
+        }
+      );
     });
   }
 });
 
-router.delete("/:id", (req, res) => {
-  mongo.userSchema.findById(req.params.id, (err, result) => {
-    if (err) {
-      res.writeHead(400, {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      });
-      res.end(JSON.stringify({ Error: "Bad Request" }));
-    }
+router.delete("/", (req, res) => {
+  if (!req.body.Key || typeof req.body.Key !== "string") {
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    });
 
-    if (result === null) {
-      res.writeHead(404, {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      });
-      res.end(JSON.stringify({ Error: "Not Found" }));
-    } else {
-      mongo.userSchema.deleteMany({ _id: req.params.id }, (err, entry) => {
-        if (err) throw err;
-        res.writeHead(200, {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        });
-        res.end(JSON.stringify({ id: entry.id }));
-      });
-    }
-  });
+    res.end(
+      JSON.stringify({
+        Error: "Bad Request",
+        Details: "User Token is required.",
+      })
+    );
+  } else {
+    jwt.verify(req.body.Key, process.env.SECRET, (err, decoded) => {
+      data = decoded.data.split(" ");
+      username = data[0];
+      password = data[1];
+
+      mongo.userSchema.findOne(
+        { Username: username, Password: password },
+        (err, result) => {
+          if (err) {
+            res.writeHead(400, {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            });
+
+            res.end(JSON.stringify({ Error: "Bad Request" }));
+          }
+
+          if (result === null) {
+            res.writeHead(404, {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            });
+
+            res.end(JSON.stringify({ Error: "Not Found" }));
+          } else {
+            mongo.userSchema.deleteMany(
+              { _id: req.params.id },
+              (err, entry) => {
+                if (err) throw err;
+                res.writeHead(200, {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                });
+
+                res.end(JSON.stringify({ id: entry.id }));
+              }
+            );
+          }
+        }
+      );
+    });
+  }
 });
 
 module.exports = router;
