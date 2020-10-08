@@ -275,7 +275,7 @@ router.post("/activate", (req, res) => {
     );
   } else {
     jwt.verify(req.body.Key, process.env.SECRET, (err, decoded) => {
-      data = decoded.data.split(" ");
+      const data = decoded.data.split(" ");
       username = data[0];
       password = data[1];
 
