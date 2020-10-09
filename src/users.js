@@ -129,7 +129,7 @@ router.post("/login", (req, res) => {
             data: `${req.body.Username} ${req.body.Password}`,
           },
           process.env.SECRET,
-          { expiresIn: "1h" }
+          { expiresIn: "2 days" }
         );
       }
 
@@ -200,7 +200,7 @@ router.post("/signup", (req, res) => {
             data: `${req.body.Username} ${req.body.Password}`,
           },
           process.env.SECRET,
-          { expiresIn: "1h" }
+          { expiresIn: "2 days" }
         );
 
         let db = new mongo.userSchema();
@@ -237,7 +237,7 @@ router.post("/signup", (req, res) => {
           from: "padscapeapp@gmail.com",
           to: req.body.Email,
           subject: "Account Activation - Padscape",
-          html: `<h1>Greetings, ${req.body.Username}!</h1><p>Welcome to the Padscape community! We hope you find our software useful and you have a great time here! The activation code you will need to be able to use your account is: ${code}</p><h3>The Padscape Team</h3>`,
+          html: `<h1>Greetings, ${req.body.Username}!</h1><p>Welcome to the Padscape community! We hope you find our software useful and you have a great time here! To activate your account, click <a href="https://padscape.github.io/code-validation">here</a>.</p><h3>The Padscape Team</h3>`,
         };
 
         transporter.sendMail(options, (err, info) => {
@@ -249,7 +249,7 @@ router.post("/signup", (req, res) => {
 });
 
 router.post("/activate", (req, res) => {
-  if (!req.body.Activation || typeof req.body.Activation !== "string") {
+  if (req.body.Activation === "" || typeof req.body.Activation !== "string") {
     res.writeHead(200, {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -261,7 +261,7 @@ router.post("/activate", (req, res) => {
         Details: "Activation code is required.",
       })
     );
-  } else if (!req.body.Key || typeof req.body.Key !== "string") {
+  } else if (req.body.Key === "" || typeof req.body.Key !== "string") {
     res.writeHead(200, {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -274,39 +274,53 @@ router.post("/activate", (req, res) => {
       })
     );
   } else {
-    jwt.verify(req.body.Key, process.env.SECRET, (err, decoded) => {
-      data = decoded.data.split(" ");
-      username = data[0];
-      password = data[1];
+    jwt.verify(req.body.Key, process.env.SECRET, function (err, decoded) {
+      if (err) {
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        });
 
-      mongo.userSchema.findOne(
-        { Username: username, Password: password },
-        (err, user) => {
-          if (err) throw err;
+        res.end(
+          JSON.stringify({
+            Error: "Invalid Token",
+            Details: "Token expired.",
+          })
+        );
+      } else {
+        const data = decoded.data.split(" ");
+        username = data[0];
+        password = data[1];
 
-          if (user === null) {
+        mongo.userSchema.findOne(
+          { Username: username, Password: password },
+          (err, user) => {
+            if (err) throw err;
+
+            if (user === null) {
+              res.writeHead(200, {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              });
+              res.end(JSON.stringify({ Valid: false }));
+              return;
+            }
+
+            let valid = false;
+
+            if (req.body.Activation === user.Activation) {
+              valid = true;
+            }
+
             res.writeHead(200, {
               "Content-Type": "application/json",
               "Access-Control-Allow-Origin": "*",
             });
-            res.end(JSON.stringify({ valid: "" }));
-            return;
+
+            res.end(JSON.stringify({ Valid: valid }));
           }
-
-          let valid = "false";
-
-          if (req.body.Activation === user.Activation) {
-            valid = "true";
-          }
-
-          res.writeHead(200, {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          });
-
-          res.end(JSON.stringify({ valid: valid }));
-        }
-      );
+        );
+      }
     });
   }
 });
