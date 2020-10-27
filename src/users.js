@@ -240,10 +240,9 @@ router.post("/signup", (req, res) => {
           html: `<h1>Greetings, ${req.body.Username}!</h1><p>Welcome to the Padscape community! We hope you find our software useful and you have a great time here! To activate your account, click <a href="https://padscape.github.io/code-validation">here</a>.</p><h3>The Padscape Team</h3>`,
         };
 
-        console.log(req.body.Email);
-
         transporter.sendMail(options, (err, info) => {
           if (err) throw err;
+          console.log("Email sent: " + info.response);
         });
       }
     });
