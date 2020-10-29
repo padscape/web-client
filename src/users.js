@@ -1,6 +1,8 @@
+const { google } = require("googleapis");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const mail = require("nodemailer");
+const OAuth2 = google.auth.OAuth2;
 const router = express.Router();
 const mongo = require("./connection.js");
 
@@ -222,27 +224,43 @@ router.post("/signup", (req, res) => {
           res.end(JSON.stringify({ page: token }));
         });
 
-        let transporter = mail.createTransport({
-          host: "smtp.gmail.com",
-          port: 587,
-          secure: false,
-          requireTLS: true,
+        const oauth2Client = new OAuth2(
+          process.env.OAUTH_CLIENT_ID,
+          process.env.OAUTH_CLIENT_SECRET,
+          "https://developers.google.com/oauthplayground"
+        );
+
+        oauth2Client.setCredentials({
+          refresh_token: process.env.OAUTH_REFRESH_TOKEN,
+        });
+
+        const accessToken = oauth2Client.getAccessToken();
+
+        const smtpTransport = mail.createTransport({
+          service: "gmail",
           auth: {
+            type: "OAuth2",
             user: "padscapeapp@gmail.com",
-            pass: process.env.EMAIL_PASS,
+            clientId: process.env.OAUTH_CLIENT_ID,
+            clientSecret: process.env.OAUTH_CLIENT_SECRET,
+            refreshToken: process.env.OAUTH_REFRESH_TOKEN,
+            accessToken: accessToken,
+          },
+          tls: {
+            rejectUnauthorized: false,
           },
         });
 
-        let options = {
+        const options = {
           from: "padscapeapp@gmail.com",
           to: req.body.Email,
           subject: "Account Activation - Padscape",
-          html: `<h1>Greetings, ${req.body.Username}!</h1><p>Welcome to the Padscape community! We hope you find our software useful and you have a great time here! To activate your account, click <a href="https://padscape.github.io/code-validation">here</a>.</p><h3>The Padscape Team</h3>`,
+          generateTextFromHTML: true,
+          html: `<h1>Greetings, ${req.body.Username}!</h1><p>Welcome to the Padscape community! We hope you find our software useful and you have a great time here! To activate your account, click <a href="https://padscape.github.io/#/code-validation/${token}">here</a>.</p><h3>The Padscape Team</h3>`,
         };
 
-        transporter.sendMail(options, (err, info) => {
-          if (err) throw err;
-          console.log("Email sent: " + info.response);
+        smtpTransport.sendMail(options, (error, response) => {
+          smtpTransport.close();
         });
       }
     });
