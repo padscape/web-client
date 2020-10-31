@@ -1,8 +1,8 @@
 const OktaJwtVerifier = require("@okta/jwt-verifier");
 
 const oktaJwtVerifier = new OktaJwtVerifier({
-  issuer: process.env.ISSUER,
-  clientId: process.env.CLIENT_ID,
+  issuer: process.env.OKTA_ISSUER,
+  clientId: process.env.OKTA_CLIENT_ID,
 });
 
 module.exports = async (req, res, next) => {
@@ -15,7 +15,7 @@ module.exports = async (req, res, next) => {
     if (authType !== "Bearer") throw new Error("Expected a Bearer token");
 
     const { claims } = await oktaJwtVerifier.verifyAccessToken(token);
-    if (!claims.scp.includes(process.env.SCOPE)) {
+    if (!claims.scp.includes(process.env.OKTA_SCOPE)) {
       throw new Error("Could not verify the proper scope");
     }
     next();
