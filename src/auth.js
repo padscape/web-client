@@ -20,7 +20,11 @@ module.exports = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    res.send(error.message);
+    res.writeHead(400, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    });
+    res.end(JSON.stringify({ Error: error.message }));
     next();
   }
 };
