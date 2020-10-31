@@ -20,6 +20,7 @@ module.exports = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    next(error.message);
+    res.send(error.message);
+    next();
   }
 };
